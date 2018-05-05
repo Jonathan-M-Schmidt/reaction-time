@@ -5,8 +5,9 @@ const pointsText = document.getElementById('points');
 const currentCircleCount = document.getElementById('circle-count');
 const canvas = document.getElementById('shape-canvas');
 const context2D = canvas.getContext('2d');
+const circleEndCount = 5;
 
-let countdown = 2100;
+let countdown = 0;
 let lastCountdown = 0;
 let currentShape = '';
 let circleCount = 0;
@@ -18,7 +19,8 @@ let currentGameResults = {
 
 startBtn.addEventListener('click', () => {
     startCountdown();
-    startBtn.classList.toggle('hidden');
+    startBtn.classList.add('hidden');
+    points.classList.add('hidden');
 })
 
 canvas.addEventListener('click', () => {
@@ -27,6 +29,7 @@ canvas.addEventListener('click', () => {
 })
 
 const startCountdown = () => {
+    reset();
     setCurrentCircleCount();
     let interval = setInterval(timer, 100);
 
@@ -44,7 +47,7 @@ const startCountdown = () => {
 
 const startGame = () => {
     timeLeft.innerHTML = 'Go!';
-    points.classList.toggle('hidden');
+    points.classList.remove('hidden');
 
     generateRandomShape();
     console.log('Start Game');
@@ -52,7 +55,7 @@ const startGame = () => {
     let interval = setInterval(timer, 10);
     
     function timer() {
-        if(circleCount < 10){
+        if(circleCount < circleEndCount){
             countdown = countdown -0.01;
             if(countdown <= 0){
                 generateRandomShape();
@@ -61,15 +64,19 @@ const startGame = () => {
         }
         else{
             clearInterval(interval);
-            timeLeft.innerHTML = 'Game Over';
-            currentGameResults.games.push(
-                {
-                    date: Date.now(), 
-                    points: currentPoints
-                }
-            )
         }
     }
+}
+
+const setGameOver = () => {
+    timeLeft.innerHTML = 'Game Over';
+    startBtn.classList.remove('hidden');
+    currentGameResults.games.push(
+        {
+            date: Date.now(), 
+            points: currentPoints
+        }
+    );
 }
 
 const setupCountdowns = () => {
@@ -108,14 +115,17 @@ const calculatePoints = () => {
     else {
         currentPoints -= 100;
     }
-    pointsText.innerHTML = currentPoints;
+    if(circleCount === circleEndCount){
+        setGameOver();
+    }
+    setPointsText();
 }
 
 const randomHexColor = () => "#" + Math.random().toString(16).slice(2, 8);
 
 const generateRandomShape = () => {
     disabled = false;
-    context2D.clearRect(0, 0, canvas.width, canvas.height);
+    clearCanvas(context2D);
     context2D.beginPath();
     chooseShape();
     context2D.fillStyle = randomHexColor();
@@ -156,4 +166,22 @@ const generateTriangle = () => {
 
 const setCurrentCircleCount = () => {
     currentCircleCount.innerHTML = circleCount;
+}
+
+const setPointsText = () => {
+    pointsText.innerHTML = currentPoints;
+}
+
+const reset = () => {
+    countdown = 2100;
+    circleCount = 0;
+    setCurrentCircleCount();
+    currentPoints = 0;
+    setPointsText();
+    currentShape = '';
+    clearCanvas(context2D);
+}
+
+const clearCanvas = (context) => {
+    context.clearRect(0, 0, canvas.width, canvas.height);
 }

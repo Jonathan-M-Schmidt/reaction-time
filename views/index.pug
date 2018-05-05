@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title Document
+        link(rel="stylesheet", href="style.css")
+    body
+        .main-container
+            h1 Test your reaction time!
+            p When you start the test, different shapes will appear. Only click on the circles to score points. Depending on your speed you get more or less points. Click the wrong shape and points will be taken from you. After ten circles have appeared the game ends.
+            h3 Circlecount: 
+                span#circle-count
+            canvas#shape-canvas
+            button#start-btn Start
+            h2#time-to-start
+            .hidden#points-container
+                h3 Points:
+                p#points
+            h2 Results:
+            for result in results
+                div
+                    p Name: #{result.name}
+                    p Points: #{result.points}
+                    p Date: #{result.date}
+                br
+        script(src="script.js" type="application/javascript")
